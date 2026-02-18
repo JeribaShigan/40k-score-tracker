@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Warhammer 40K 10th — Score Tracker</title>
   <style>
     :root{
@@ -102,7 +102,9 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
-    button{
+    button{button{
+  touch-action: manipulation;
+}
       appearance:none;
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
