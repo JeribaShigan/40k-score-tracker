@@ -20,6 +20,17 @@
       --btnH: 60px;
       --btnFont: 20px;
       --numFont: 36px;
+
+      /* TOTAL should be huge */
+      --totalFont: 56px;
+
+      /* Subtle player tint backgrounds */
+      --p1Tint: rgba(59,130,246,0.12);  /* blue */
+      --p2Tint: rgba(239,68,68,0.12);   /* red  */
+
+      /* Total glow colors (subtle) */
+      --p1Glow: rgba(59,130,246,0.35);
+      --p2Glow: rgba(239,68,68,0.35);
     }
 
     *{ box-sizing:border-box; }
@@ -66,6 +77,18 @@
       box-shadow: var(--shadow);
     }
 
+    /* Better use of empty space in top-left card */
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .titleTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
     .title h1{
       margin:0;
       font-size: 16px;
@@ -75,7 +98,37 @@
       margin:6px 0 0;
       font-size: 12px;
       color: var(--muted);
+      line-height: 1.35;
     }
+
+    .miniTotals{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+    }
+    .miniPill{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.16);
+      padding: 10px 12px;
+      min-width: 120px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:6px;
+    }
+    .miniPill .miniLabel{
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing:.2px;
+    }
+    .miniPill .miniScore{
+      font-size: 26px;
+      font-weight: 1000;
+      line-height:1;
+    }
+    .miniPill.p1 { background: linear-gradient(180deg, var(--p1Tint), rgba(0,0,0,.14)); }
+    .miniPill.p2 { background: linear-gradient(180deg, var(--p2Tint), rgba(0,0,0,.14)); }
 
     .topControls{
       display:grid;
@@ -122,6 +175,20 @@
       flex-direction:column;
       gap:12px;
       min-height: 420px;
+      position: relative;
+      overflow:hidden;
+    }
+
+    /* Subtle background tint per player (ONLY background) */
+    .player.p1{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)),
+        radial-gradient(900px 520px at 20% 10%, var(--p1Tint), transparent 55%);
+    }
+    .player.p2{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)),
+        radial-gradient(900px 520px at 20% 10%, var(--p2Tint), transparent 55%);
     }
 
     .playerHead{
@@ -150,14 +217,50 @@
       text-align:right;
       display:flex;
       flex-direction:column;
-      gap:4px;
+      gap:6px;
       align-items:flex-end;
     }
+
+    /* TOTAL: huge + bold + glow background */
     .totals .score{
-      font-size: 34px;
-      font-weight: 1000;
-      color: var(--good);
-      line-height:1;
+      font-size: var(--totalFont);
+      font-weight: 1100;
+      letter-spacing: .3px;
+      line-height: 0.95;
+      color: #f4fffd;
+
+      /* "pill" background behind the total number */
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+
+      /* depth */
+      text-shadow: 0 10px 26px rgba(0,0,0,.40);
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    }
+
+    /* Player-specific glow tint around the total pill */
+    .player.p1 .totals .score{
+      box-shadow:
+        0 0 0 4px rgba(59,130,246,0.10),
+        0 0 26px var(--p1Glow),
+        0 10px 26px rgba(0,0,0,.35);
+      background: linear-gradient(180deg, rgba(59,130,246,0.14), rgba(0,0,0,0.18));
+      border-color: rgba(59,130,246,0.20);
+    }
+    .player.p2 .totals .score{
+      box-shadow:
+        0 0 0 4px rgba(239,68,68,0.10),
+        0 0 26px var(--p2Glow),
+        0 10px 26px rgba(0,0,0,.35);
+      background: linear-gradient(180deg, rgba(239,68,68,0.14), rgba(0,0,0,0.18));
+      border-color: rgba(239,68,68,0.20);
+    }
+
+    .totals .label{
+      font-size: 12px;
+      letter-spacing: .2px;
     }
 
     .stat{
@@ -246,8 +349,26 @@
   <div class="wrap">
     <header>
       <div class="card title">
-        <h1>Warhammer 40K 10th — Score Tracker</h1>
-        <p>Big buttons • iPad mini 2 compatible • Autosave (this browser)</p>
+        <div class="titleTop">
+          <div>
+            <h1>Warhammer 40K 10th — Score Tracker</h1>
+            <p>
+              Big buttons • iPad mini 2 compatible • Autosave (this browser)<br/>
+              Tip: totals update automatically (Primary + Secondary).
+            </p>
+          </div>
+
+          <div class="miniTotals" aria-label="Quick totals preview">
+            <div class="miniPill p1">
+              <div class="miniLabel">P1 Total</div>
+              <div class="miniScore" id="miniP1Total">0</div>
+            </div>
+            <div class="miniPill p2">
+              <div class="miniLabel">P2 Total</div>
+              <div class="miniScore" id="miniP2Total">0</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="topControls">
@@ -283,14 +404,14 @@
 
     <div class="grid">
       <!-- PLAYER 1 -->
-      <section class="card player">
+      <section class="card player p1">
         <div class="playerHead">
           <div class="playerName">
             <div class="label">Player 1</div>
             <input id="p1Name" value="Player 1" maxlength="24" />
           </div>
           <div class="totals">
-            <span class="label">Total</span>
+            <span class="label">TOTAL</span>
             <div class="score" id="p1Total">0</div>
           </div>
         </div>
@@ -334,14 +455,14 @@
       </section>
 
       <!-- PLAYER 2 -->
-      <section class="card player">
+      <section class="card player p2">
         <div class="playerHead">
           <div class="playerName">
             <div class="label">Player 2</div>
             <input id="p2Name" value="Player 2" maxlength="24" />
           </div>
           <div class="totals">
-            <span class="label">Total</span>
+            <span class="label">TOTAL</span>
             <div class="score" id="p2Total">0</div>
           </div>
         </div>
@@ -385,11 +506,11 @@
       </section>
     </div>
 
-    <footer>If iPad still shows old behavior: clear Safari cache once (instructions below).</footer>
+    <footer>Tip: If you ever see an old version on iPad mini 2, clear Safari cache once.</footer>
   </div>
 
   <script>
-    var STORAGE_KEY = "wh40k10_score_tracker_v3";
+    var STORAGE_KEY = "wh40k10_score_tracker_v5";
 
     function defaultState(){
       return {
@@ -443,7 +564,7 @@
     function flash(el){
       if(!el) return;
       el.classList.remove("flash");
-      void el.offsetWidth; // restart animation
+      void el.offsetWidth;
       el.classList.add("flash");
     }
 
@@ -455,7 +576,6 @@
     }
 
     function render(){
-      // names
       var p1Name = document.getElementById("p1Name");
       var p2Name = document.getElementById("p2Name");
       if(p1Name && p1Name.value !== state.p1.name) p1Name.value = state.p1.name;
@@ -470,7 +590,9 @@
         p2CP: state.p2.cp,
         p2Primary: state.p2.primary,
         p2Secondary: state.p2.secondary,
-        p2Total: total("p2")
+        p2Total: total("p2"),
+        miniP1Total: total("p1"),
+        miniP2Total: total("p2")
       };
 
       if(!lastRendered) lastRendered = {};
@@ -529,23 +651,18 @@
         return;
       }
       if(action === "reset"){ resetGame(); return; }
-      if(action === "clear"){ clearSaved(); return; }
+      ifactionclear:0
     }
 
-    // -------- iPad mini 2 safe input handling --------
-    // iOS Safari often fires touch + then a "ghost click".
-    // We handle touchend, then ignore the next click if it comes right after.
+    // iPad mini 2 safe input handling
     var lastTouchTime = 0;
-
     function isRecentlyTouched(){
       return (Date.now() - lastTouchTime) < 700;
     }
 
     function setupEvents(){
-      // Event delegation: one handler for the whole page
       document.addEventListener("touchend", function(ev){
         var t = ev.target;
-        // Find nearest button
         while(t && t !== document && !(t.tagName && t.tagName.toLowerCase() === "button")) t = t.parentNode;
         if(!t || !t.getAttribute) return;
         if(!t.getAttribute("data-action")) return;
@@ -557,7 +674,6 @@
 
       document.addEventListener("click", function(ev){
         if(isRecentlyTouched()){
-          // ignore ghost click
           ev.preventDefault();
           return;
         }
@@ -570,7 +686,6 @@
         handleButton(t);
       }, false);
 
-      // Names
       document.getElementById("p1Name").addEventListener("input", function(e){
         state.p1.name = String(e.target.value).slice(0,24);
         save();
@@ -581,7 +696,6 @@
       });
     }
 
-    // Init
     load();
     setupEvents();
     render();
