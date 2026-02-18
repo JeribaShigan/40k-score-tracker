@@ -2,35 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Warhammer 40K 10th — Score Tracker</title>
 
   <style>
     :root{
       --bg:#0b0f14;
-      --card:#121a24;
-      --card2:#0f1620;
       --text:#e8eef6;
       --muted:#a9b6c7;
       --line:#223043;
       --good:#2dd4bf;
       --bad:#fb7185;
-      --btn:#1f2b3a;
-      --btn2:#263449;
-
       --radius: 18px;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
 
-      /* Big, finger-friendly sizing */
-      --btnH: 56px;
-      --btnMinW: 78px;
-      --btnFont: 18px;
-
-      --numFont: 34px;
-      --titleFont: 16px;
+      /* Big finger-friendly buttons */
+      --btnH: 60px;
+      --btnFont: 20px;
+      --numFont: 36px;
     }
 
     *{ box-sizing:border-box; }
@@ -46,13 +35,10 @@
       color:var(--text);
       padding: 14px;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
       touch-action: manipulation;
-    }
-
-    /* Prevent iOS text selection/zoom weirdness on taps */
-    .noSelect{
-      -webkit-user-select:none;
-      user-select:none;
     }
 
     .wrap{
@@ -68,33 +54,25 @@
       grid-template-columns: 1fr;
       gap:12px;
     }
-
-    /* On tablets/landscape: header becomes 2 columns */
     @media (min-width: 760px){
-      header{
-        grid-template-columns: 1.4fr 1fr;
-        align-items:stretch;
-      }
+      header{ grid-template-columns: 1.4fr 1fr; }
     }
 
-    .titleCard{
+    .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius: var(--radius);
       padding:14px;
       box-shadow: var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
     }
 
-    .titleCard h1{
+    .title h1{
       margin:0;
-      font-size: var(--titleFont);
+      font-size: 16px;
       letter-spacing:.2px;
     }
-    .titleCard p{
-      margin:0;
+    .title p{
+      margin:6px 0 0;
       font-size: 12px;
       color: var(--muted);
     }
@@ -104,23 +82,8 @@
       grid-template-columns: 1fr;
       gap:12px;
     }
-
     @media (min-width: 760px){
-      .topControls{
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .pill{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:12px;
-      box-shadow: var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height: 96px;
+      .topControls{ grid-template-columns: 1fr 1fr; }
     }
 
     .row{
@@ -129,13 +92,10 @@
       justify-content:space-between;
       gap:10px;
     }
-
     .label{
       color:var(--muted);
       font-size: 12px;
-      letter-spacing:.2px;
     }
-
     .valueBig{
       font-size: 30px;
       font-weight: 900;
@@ -143,29 +103,21 @@
     }
 
     .hint{
+      margin-top:8px;
       font-size: 12px;
       color: var(--muted);
-      margin-top: -2px;
     }
 
-    /* Main grid: always 2 columns on tablet landscape */
     .grid{
       display:grid;
       grid-template-columns: 1fr;
       gap:12px;
     }
     @media (min-width: 760px){
-      .grid{
-        grid-template-columns: 1fr 1fr;
-      }
+      .grid{ grid-template-columns: 1fr 1fr; }
     }
 
     .player{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -179,23 +131,19 @@
       align-items:center;
     }
 
-    .playerName{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-
     .playerName input{
+      width:100%;
+      max-width: 360px;
       background: rgba(0,0,0,.18);
       border:1px solid var(--line);
       border-radius: 14px;
-      padding: 12px 12px;
+      padding: 12px;
       color: var(--text);
       font-weight: 900;
       font-size: 18px;
       outline:none;
-      width:100%;
-      max-width: 360px;
+      -webkit-user-select: text;
+      user-select: text;
     }
 
     .totals{
@@ -228,20 +176,17 @@
       justify-content:space-between;
       gap:10px;
     }
-
     .statTop .name{
       font-weight: 900;
       font-size: 14px;
       letter-spacing:.2px;
     }
-
     .statTop .num{
       font-weight: 1000;
       font-size: var(--numFont);
       line-height:1;
     }
 
-    /* Button layout: grid so there is NO weird empty space */
     .btnGrid2, .btnGrid4{
       display:grid;
       gap:10px;
@@ -255,26 +200,19 @@
       background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       color:var(--text);
       border-radius: 16px;
-
       height: var(--btnH);
-      min-width: var(--btnMinW);
-      padding: 0 12px;
+      padding: 0 10px;
       font-weight: 950;
       font-size: var(--btnFont);
-
       cursor:pointer;
-
-      /* iOS / iPad reliability */
-      touch-action: manipulation;
-      -webkit-touch-callout: none;
 
       display:flex;
       align-items:center;
       justify-content:center;
 
       box-shadow: 0 8px 18px rgba(0,0,0,.18);
+      touch-action: manipulation;
     }
-
     button:active{
       transform: translateY(1px) scale(0.99);
     }
@@ -286,7 +224,7 @@
     /* Flash animation when a number changes */
     @keyframes flash {
       0%   { background: rgba(45,212,191,.00); box-shadow: none; }
-      10%  { background: rgba(45,212,191,.18); box-shadow: 0 0 0 4px rgba(45,212,191,.18); }
+      15%  { background: rgba(45,212,191,.20); box-shadow: 0 0 0 4px rgba(45,212,191,.18); }
       100% { background: rgba(45,212,191,.00); box-shadow: none; }
     }
     .flash{
@@ -304,22 +242,22 @@
   </style>
 </head>
 
-<body class="noSelect">
+<body>
   <div class="wrap">
     <header>
-      <div class="titleCard">
+      <div class="card title">
         <h1>Warhammer 40K 10th — Score Tracker</h1>
-        <p>Big buttons • Tablet-friendly • Autosave (this browser)</p>
+        <p>Big buttons • iPad mini 2 compatible • Autosave (this browser)</p>
       </div>
 
       <div class="topControls">
-        <div class="pill">
+        <div class="card">
           <div class="row">
             <div>
               <div class="label">Battle Round</div>
               <div class="valueBig" id="roundValue">1</div>
             </div>
-            <div class="btnGrid2" style="width: 180px;">
+            <div class="btnGrid2" style="width: 200px;">
               <button class="btnNeutral" data-action="round" data-delta="-1">−</button>
               <button class="btnNeutral" data-action="round" data-delta="1">+</button>
             </div>
@@ -327,8 +265,8 @@
           <div class="hint">Round is limited to 1–5.</div>
         </div>
 
-        <div class="pill">
-          <div class="row">
+        <div class="card">
+          <div class="row" style="margin-bottom:10px;">
             <div>
               <div class="label">Quick Actions</div>
               <div style="font-weight:950;">Reset / Clear</div>
@@ -345,7 +283,7 @@
 
     <div class="grid">
       <!-- PLAYER 1 -->
-      <section class="player" aria-label="Player 1">
+      <section class="card player">
         <div class="playerHead">
           <div class="playerName">
             <div class="label">Player 1</div>
@@ -396,7 +334,7 @@
       </section>
 
       <!-- PLAYER 2 -->
-      <section class="player" aria-label="Player 2">
+      <section class="card player">
         <div class="playerHead">
           <div class="playerName">
             <div class="label">Player 2</div>
@@ -447,57 +385,55 @@
       </section>
     </div>
 
-    <footer>Tip: It autosaves on your device. If you open it in a different browser/device, it starts fresh.</footer>
+    <footer>If iPad still shows old behavior: clear Safari cache once (instructions below).</footer>
   </div>
 
   <script>
-    const STORAGE_KEY = "wh40k10_score_tracker_v2";
+    var STORAGE_KEY = "wh40k10_score_tracker_v3";
 
-    const defaultState = () => ({
-      round: 1,
-      p1: { name: "Player 1", cp: 1, primary: 0, secondary: 0 },
-      p2: { name: "Player 2", cp: 1, primary: 0, secondary: 0 }
-    });
+    function defaultState(){
+      return {
+        round: 1,
+        p1: { name: "Player 1", cp: 1, primary: 0, secondary: 0 },
+        p2: { name: "Player 2", cp: 1, primary: 0, secondary: 0 }
+      };
+    }
 
-    let state = defaultState();
+    var state = defaultState();
+    var lastRendered = null;
 
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-    function safeNum(x, fallback=0){
-      const n = Number(x);
-      return Number.isFinite(n) ? n : fallback;
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function safeNum(x, fallback){
+      var n = Number(x);
+      return (isFinite(n) ? n : fallback);
     }
 
     function load(){
       try{
-        const raw = localStorage.getItem(STORAGE_KEY);
+        var raw = localStorage.getItem(STORAGE_KEY);
         if(!raw) return;
-        const p = JSON.parse(raw);
+        var p = JSON.parse(raw);
 
         state = {
           round: clamp(safeNum(p.round, 1), 1, 5),
           p1: {
-            name: String(p?.p1?.name ?? "Player 1").slice(0,24),
-            cp: Math.max(0, safeNum(p?.p1?.cp, 1)),
-            primary: Math.max(0, safeNum(p?.p1?.primary, 0)),
-            secondary: Math.max(0, safeNum(p?.p1?.secondary, 0))
+            name: String((p.p1 && p.p1.name) ? p.p1.name : "Player 1").slice(0,24),
+            cp: Math.max(0, safeNum(p.p1 && p.p1.cp, 1)),
+            primary: Math.max(0, safeNum(p.p1 && p.p1.primary, 0)),
+            secondary: Math.max(0, safeNum(p.p1 && p.p1.secondary, 0))
           },
           p2: {
-            name: String(p?.p2?.name ?? "Player 2").slice(0,24),
-            cp: Math.max(0, safeNum(p?.p2?.cp, 1)),
-            primary: Math.max(0, safeNum(p?.p2?.primary, 0)),
-            secondary: Math.max(0, safeNum(p?.p2?.secondary, 0))
+            name: String((p.p2 && p.p2.name) ? p.p2.name : "Player 2").slice(0,24),
+            cp: Math.max(0, safeNum(p.p2 && p.p2.cp, 1)),
+            primary: Math.max(0, safeNum(p.p2 && p.p2.primary, 0)),
+            secondary: Math.max(0, safeNum(p.p2 && p.p2.secondary, 0))
           }
         };
-      }catch(e){
-        // ignore broken save
-      }
+      }catch(e){}
     }
 
     function save(){
-      try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }catch(e){}
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
     }
 
     function total(player){
@@ -505,18 +441,27 @@
     }
 
     function flash(el){
-      // restart animation even if tapped fast
+      if(!el) return;
       el.classList.remove("flash");
-      // force reflow
-      void el.offsetWidth;
+      void el.offsetWidth; // restart animation
       el.classList.add("flash");
     }
 
-    // Keep last rendered values so we can flash only when changed
-    let lastRendered = null;
+    function setText(id, val){
+      var el = document.getElementById(id);
+      if(!el) return;
+      var newText = String(val);
+      if(el.textContent !== newText) el.textContent = newText;
+    }
 
     function render(){
-      const ids = {
+      // names
+      var p1Name = document.getElementById("p1Name");
+      var p2Name = document.getElementById("p2Name");
+      if(p1Name && p1Name.value !== state.p1.name) p1Name.value = state.p1.name;
+      if(p2Name && p2Name.value !== state.p2.name) p2Name.value = state.p2.name;
+
+      var now = {
         roundValue: state.round,
         p1CP: state.p1.cp,
         p1Primary: state.p1.primary,
@@ -525,38 +470,21 @@
         p2CP: state.p2.cp,
         p2Primary: state.p2.primary,
         p2Secondary: state.p2.secondary,
-        p2Total: total("p2"),
+        p2Total: total("p2")
       };
 
-      // Names
-      const p1Name = document.getElementById("p1Name");
-      const p2Name = document.getElementById("p2Name");
-      if(p1Name.value !== state.p1.name) p1Name.value = state.p1.name;
-      if(p2Name.value !== state.p2.name) p2Name.value = state.p2.name;
-
-      // Numbers + flash when changed
-      if(!lastRendered) lastRendered = { ...ids };
-
-      for(const [id, val] of Object.entries(ids)){
-        const el = document.getElementById(id);
-        const newText = String(val);
-        const oldText = el.textContent;
-
-        if(oldText !== newText){
-          el.textContent = newText;
-        }
-
-        // flash only if value changed vs lastRendered
-        if(lastRendered[id] !== val){
-          flash(el);
+      if(!lastRendered) lastRendered = {};
+      for(var id in now){
+        setText(id, now[id]);
+        if(lastRendered[id] !== now[id]){
+          flash(document.getElementById(id));
         }
       }
-
-      lastRendered = { ...ids };
+      lastRendered = now;
     }
 
     function add(player, field, delta){
-      const cur = safeNum(state[player][field], 0);
+      var cur = safeNum(state[player][field], 0);
       state[player][field] = Math.max(0, cur + delta);
       save();
       render();
@@ -569,7 +497,7 @@
     }
 
     function resetGame(){
-      const ok = confirm("Reset to defaults?\n\nRound: 1\nCP: 1 each\nPrimary/Secondary: 0");
+      var ok = confirm("Reset to defaults?\n\nRound: 1\nCP: 1 each\nPrimary/Secondary: 0");
       if(!ok) return;
       state = defaultState();
       save();
@@ -577,7 +505,7 @@
     }
 
     function clearSaved(){
-      const ok = confirm("Clear saved data from this device/browser?");
+      var ok = confirm("Clear saved data from this device/browser?");
       if(!ok) return;
       localStorage.removeItem(STORAGE_KEY);
       state = defaultState();
@@ -586,62 +514,68 @@
       alert("Cleared. Back to defaults.");
     }
 
-    function handleAction(btn){
-      const action = btn.dataset.action;
+    function handleButton(btn){
+      var action = btn.getAttribute("data-action");
 
       if(action === "round"){
-        changeRound(safeNum(btn.dataset.delta, 0));
+        changeRound(safeNum(btn.getAttribute("data-delta"), 0));
         return;
       }
-
       if(action === "add"){
-        const player = btn.dataset.player;
-        const field = btn.dataset.field;
-        const delta = safeNum(btn.dataset.delta, 0);
+        var player = btn.getAttribute("data-player");
+        var field = btn.getAttribute("data-field");
+        var delta = safeNum(btn.getAttribute("data-delta"), 0);
         add(player, field, delta);
         return;
       }
-
-      if(action === "reset"){
-        resetGame();
-        return;
-      }
-
-      if(action === "clear"){
-        clearSaved();
-        return;
-      }
+      if(action === "reset"){ resetGame(); return; }
+      if(action === "clear"){ clearSaved(); return; }
     }
 
-    // iPad/iPhone reliability:
-    // Use pointerdown/touchstart instead of inline onclick.
-    function attachButtonHandlers(){
-      const buttons = document.querySelectorAll("button[data-action]");
+    // -------- iPad mini 2 safe input handling --------
+    // iOS Safari often fires touch + then a "ghost click".
+    // We handle touchend, then ignore the next click if it comes right after.
+    var lastTouchTime = 0;
 
-      buttons.forEach(btn => {
-        // Prevent double-trigger: we handle only one event.
-        // Use pointerdown when available; fall back to touchstart/click.
-        const onPress = (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          handleAction(btn);
-        };
-
-        btn.addEventListener("pointerdown", onPress, { passive: false });
-        btn.addEventListener("touchstart", onPress, { passive: false });
-        btn.addEventListener("click", (ev) => {
-          ev.preventDefault();
-          handleAction(btn);
-        }, { passive: false });
-      });
+    function isRecentlyTouched(){
+      return (Date.now() - lastTouchTime) < 700;
     }
 
-    function attachNameHandlers(){
-      document.getElementById("p1Name").addEventListener("input", (e) => {
+    function setupEvents(){
+      // Event delegation: one handler for the whole page
+      document.addEventListener("touchend", function(ev){
+        var t = ev.target;
+        // Find nearest button
+        while(t && t !== document && !(t.tagName && t.tagName.toLowerCase() === "button")) t = t.parentNode;
+        if(!t || !t.getAttribute) return;
+        if(!t.getAttribute("data-action")) return;
+
+        ev.preventDefault();
+        lastTouchTime = Date.now();
+        handleButton(t);
+      }, { passive: false });
+
+      document.addEventListener("click", function(ev){
+        if(isRecentlyTouched()){
+          // ignore ghost click
+          ev.preventDefault();
+          return;
+        }
+        var t = ev.target;
+        while(t && t !== document && !(t.tagName && t.tagName.toLowerCase() === "button")) t = t.parentNode;
+        if(!t || !t.getAttribute) return;
+        if(!t.getAttribute("data-action")) return;
+
+        ev.preventDefault();
+        handleButton(t);
+      }, false);
+
+      // Names
+      document.getElementById("p1Name").addEventListener("input", function(e){
         state.p1.name = String(e.target.value).slice(0,24);
         save();
       });
-      document.getElementById("p2Name").addEventListener("input", (e) => {
+      document.getElementById("p2Name").addEventListener("input", function(e){
         state.p2.name = String(e.target.value).slice(0,24);
         save();
       });
@@ -649,8 +583,7 @@
 
     // Init
     load();
-    attachButtonHandlers();
-    attachNameHandlers();
+    setupEvents();
     render();
   </script>
 </body>
