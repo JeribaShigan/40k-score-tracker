@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <title>Warhammer 40K 10th — Score Tracker</title>
+
   <style>
     :root{
       --bg:#0b0f14;
@@ -13,123 +17,149 @@
       --muted:#a9b6c7;
       --line:#223043;
       --good:#2dd4bf;
-      --warn:#fbbf24;
       --bad:#fb7185;
       --btn:#1f2b3a;
       --btn2:#263449;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+
       --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+
+      /* Big, finger-friendly sizing */
+      --btnH: 56px;
+      --btnMinW: 78px;
+      --btnFont: 18px;
+
+      --numFont: 34px;
+      --titleFont: 16px;
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+
     body{
       margin:0;
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background: radial-gradient(1000px 600px at 20% -10%, rgba(45,212,191,.12), transparent 60%),
-                  radial-gradient(800px 500px at 90% 0%, rgba(251,191,36,.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1000px 600px at 20% -10%, rgba(45,212,191,.12), transparent 60%),
+        radial-gradient(800px 500px at 90% 0%, rgba(251,113,133,.10), transparent 55%),
+        var(--bg);
       color:var(--text);
-      padding:16px;
+      padding: 14px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
+
+    /* Prevent iOS text selection/zoom weirdness on taps */
+    .noSelect{
+      -webkit-user-select:none;
+      user-select:none;
+    }
+
     .wrap{
-      max-width: 980px;
+      max-width: 1100px;
       margin: 0 auto;
       display:flex;
       flex-direction:column;
-      gap:14px;
-    }
-    header{
-      display:flex;
       gap:12px;
-      align-items:stretch;
-      justify-content:space-between;
-      flex-wrap:wrap;
     }
-    .title{
-      flex:1;
-      min-width: 260px;
+
+    header{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    /* On tablets/landscape: header becomes 2 columns */
+    @media (min-width: 760px){
+      header{
+        grid-template-columns: 1.4fr 1fr;
+        align-items:stretch;
+      }
+    }
+
+    .titleCard{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius: var(--radius);
-      padding:14px 14px;
+      padding:14px;
       box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
-    .title h1{
-      font-size: 16px;
-      margin:0 0 4px 0;
+
+    .titleCard h1{
+      margin:0;
+      font-size: var(--titleFont);
       letter-spacing:.2px;
     }
-    .title p{
+    .titleCard p{
       margin:0;
-      color:var(--muted);
       font-size: 12px;
+      color: var(--muted);
     }
+
     .topControls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:stretch;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
     }
+
+    @media (min-width: 760px){
+      .topControls{
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     .pill{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
       border-radius: var(--radius);
-      padding:10px;
-      min-width: 230px;
+      padding:12px;
       box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
       gap:10px;
+      min-height: 96px;
     }
+
     .row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
     }
+
     .label{
       color:var(--muted);
-      font-size:12px;
+      font-size: 12px;
       letter-spacing:.2px;
     }
+
     .valueBig{
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
       line-height:1;
     }
-    .btnRow{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: -2px;
     }
-    button{button{
-  touch-action: manipulation;
-}
-      appearance:none;
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      color:var(--text);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor:pointer;
-      min-width: 54px;
-      touch-action: manipulation;
-    }
-    button:active{ transform: translateY(1px); }
-    .btnSmall{ padding: 8px 10px; min-width: 48px; font-size: 13px; }
-    .btnDanger{ border-color: rgba(251,113,133,.45); }
-    .btnDanger:hover{ box-shadow: 0 0 0 3px rgba(251,113,133,.15); }
-    .btnGood{ border-color: rgba(45,212,191,.45); }
-    .btnGood:hover{ box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
+
+    /* Main grid: always 2 columns on tablet landscape */
     .grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap:14px;
+      gap:12px;
     }
-    @media (min-width: 840px){
-      .grid{ grid-template-columns: 1fr 1fr; }
+    @media (min-width: 760px){
+      .grid{
+        grid-template-columns: 1fr 1fr;
+      }
     }
+
     .player{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
@@ -139,116 +169,182 @@
       display:flex;
       flex-direction:column;
       gap:12px;
+      min-height: 420px;
     }
+
     .playerHead{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      display:grid;
+      grid-template-columns: 1fr auto;
       gap:10px;
+      align-items:center;
     }
+
     .playerName{
       display:flex;
       flex-direction:column;
-      gap:2px;
+      gap:6px;
     }
+
     .playerName input{
       background: rgba(0,0,0,.18);
       border:1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 10px;
+      border-radius: 14px;
+      padding: 12px 12px;
       color: var(--text);
-      font-weight:800;
-      font-size: 16px;
-      width: 100%;
-      min-width: 180px;
+      font-weight: 900;
+      font-size: 18px;
       outline:none;
+      width:100%;
+      max-width: 360px;
     }
+
     .totals{
       text-align:right;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      align-items:flex-end;
     }
-    .totals .label{ margin-bottom:2px; display:block; }
     .totals .score{
-      font-size: 28px;
-      font-weight: 900;
+      font-size: 34px;
+      font-weight: 1000;
       color: var(--good);
+      line-height:1;
     }
+
     .stat{
       border:1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 18px;
       background: rgba(0,0,0,.14);
       padding: 12px;
       display:flex;
       flex-direction:column;
       gap:10px;
     }
+
     .statTop{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
     }
+
     .statTop .name{
-      font-weight: 800;
-      font-size: 14px;
-    }
-    .statTop .num{
       font-weight: 900;
-      font-size: 26px;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+
+    .statTop .num{
+      font-weight: 1000;
+      font-size: var(--numFont);
       line-height:1;
     }
-    .hint{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: -6px;
+
+    /* Button layout: grid so there is NO weird empty space */
+    .btnGrid2, .btnGrid4{
+      display:grid;
+      gap:10px;
     }
+    .btnGrid2{ grid-template-columns: repeat(2, 1fr); }
+    .btnGrid4{ grid-template-columns: repeat(4, 1fr); }
+
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      color:var(--text);
+      border-radius: 16px;
+
+      height: var(--btnH);
+      min-width: var(--btnMinW);
+      padding: 0 12px;
+      font-weight: 950;
+      font-size: var(--btnFont);
+
+      cursor:pointer;
+
+      /* iOS / iPad reliability */
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
+    }
+
+    button:active{
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .btnGood{ border-color: rgba(45,212,191,.55); }
+    .btnDanger{ border-color: rgba(251,113,133,.55); }
+    .btnNeutral{ border-color: rgba(169,182,199,.35); }
+
+    /* Flash animation when a number changes */
+    @keyframes flash {
+      0%   { background: rgba(45,212,191,.00); box-shadow: none; }
+      10%  { background: rgba(45,212,191,.18); box-shadow: 0 0 0 4px rgba(45,212,191,.18); }
+      100% { background: rgba(45,212,191,.00); box-shadow: none; }
+    }
+    .flash{
+      border-radius: 12px;
+      padding: 2px 8px;
+      animation: flash 420ms ease-out;
+    }
+
     footer{
+      text-align:center;
       color: var(--muted);
       font-size: 12px;
-      text-align:center;
-      padding: 6px 0 2px;
+      padding: 4px 0 2px;
     }
   </style>
 </head>
-<body>
+
+<body class="noSelect">
   <div class="wrap">
     <header>
-      <div class="title">
-        <h1>Warhammer 40K 10th — Simple Score Tracker</h1>
-        <p>Battle Round • CP • Primary • Secondary • Totals • Autosave (this browser)</p>
+      <div class="titleCard">
+        <h1>Warhammer 40K 10th — Score Tracker</h1>
+        <p>Big buttons • Tablet-friendly • Autosave (this browser)</p>
       </div>
 
       <div class="topControls">
-        <div class="pill" aria-label="Battle round controls">
+        <div class="pill">
           <div class="row">
             <div>
               <div class="label">Battle Round</div>
               <div class="valueBig" id="roundValue">1</div>
             </div>
-            <div class="btnRow">
-              <button class="btnSmall" onclick="changeRound(-1)">−</button>
-              <button class="btnSmall" onclick="changeRound(1)">+</button>
+            <div class="btnGrid2" style="width: 180px;">
+              <button class="btnNeutral" data-action="round" data-delta="-1">−</button>
+              <button class="btnNeutral" data-action="round" data-delta="1">+</button>
             </div>
           </div>
-          <div class="hint">Clamped to rounds 1–5.</div>
+          <div class="hint">Round is limited to 1–5.</div>
         </div>
 
-        <div class="pill" aria-label="Game actions">
+        <div class="pill">
           <div class="row">
             <div>
               <div class="label">Quick Actions</div>
-              <div style="font-weight:800;">Reset / Clear</div>
-            </div>
-            <div class="btnRow">
-              <button class="btnSmall btnDanger" onclick="resetGame()">Reset</button>
-              <button class="btnSmall" onclick="clearSaved()">Clear Save</button>
+              <div style="font-weight:950;">Reset / Clear</div>
             </div>
           </div>
-          <div class="hint">Reset keeps autosave; Clear Save removes stored data.</div>
+          <div class="btnGrid2">
+            <button class="btnDanger" data-action="reset">Reset</button>
+            <button class="btnNeutral" data-action="clear">Clear Save</button>
+          </div>
+          <div class="hint">Reset keeps autosave. Clear Save deletes stored data.</div>
         </div>
       </div>
     </header>
 
     <div class="grid">
+      <!-- PLAYER 1 -->
       <section class="player" aria-label="Player 1">
         <div class="playerHead">
           <div class="playerName">
@@ -266,9 +362,9 @@
             <div class="name">Command Points (CP)</div>
             <div class="num" id="p1CP">1</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p1','cp',-1)">−1</button>
-            <button onclick="add('p1','cp', 1)">+1</button>
+          <div class="btnGrid2">
+            <button class="btnNeutral" data-action="add" data-player="p1" data-field="cp" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p1" data-field="cp" data-delta="1">+1</button>
           </div>
         </div>
 
@@ -277,11 +373,11 @@
             <div class="name">Primary</div>
             <div class="num" id="p1Primary">0</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p1','primary',-5)">−5</button>
-            <button onclick="add('p1','primary',-1)">−1</button>
-            <button class="btnGood" onclick="add('p1','primary', 1)">+1</button>
-            <button class="btnGood" onclick="add('p1','primary', 5)">+5</button>
+          <div class="btnGrid4">
+            <button class="btnNeutral" data-action="add" data-player="p1" data-field="primary" data-delta="-5">−5</button>
+            <button class="btnNeutral" data-action="add" data-player="p1" data-field="primary" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p1" data-field="primary" data-delta="1">+1</button>
+            <button class="btnGood" data-action="add" data-player="p1" data-field="primary" data-delta="5">+5</button>
           </div>
         </div>
 
@@ -290,15 +386,16 @@
             <div class="name">Secondary</div>
             <div class="num" id="p1Secondary">0</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p1','secondary',-5)">−5</button>
-            <button onclick="add('p1','secondary',-1)">−1</button>
-            <button class="btnGood" onclick="add('p1','secondary', 1)">+1</button>
-            <button class="btnGood" onclick="add('p1','secondary', 5)">+5</button>
+          <div class="btnGrid4">
+            <button class="btnNeutral" data-action="add" data-player="p1" data-field="secondary" data-delta="-5">−5</button>
+            <button class="btnNeutral" data-action="add" data-player="p1" data-field="secondary" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p1" data-field="secondary" data-delta="1">+1</button>
+            <button class="btnGood" data-action="add" data-player="p1" data-field="secondary" data-delta="5">+5</button>
           </div>
         </div>
       </section>
 
+      <!-- PLAYER 2 -->
       <section class="player" aria-label="Player 2">
         <div class="playerHead">
           <div class="playerName">
@@ -316,9 +413,9 @@
             <div class="name">Command Points (CP)</div>
             <div class="num" id="p2CP">1</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p2','cp',-1)">−1</button>
-            <button onclick="add('p2','cp', 1)">+1</button>
+          <div class="btnGrid2">
+            <button class="btnNeutral" data-action="add" data-player="p2" data-field="cp" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p2" data-field="cp" data-delta="1">+1</button>
           </div>
         </div>
 
@@ -327,11 +424,11 @@
             <div class="name">Primary</div>
             <div class="num" id="p2Primary">0</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p2','primary',-5)">−5</button>
-            <button onclick="add('p2','primary',-1)">−1</button>
-            <button class="btnGood" onclick="add('p2','primary', 1)">+1</button>
-            <button class="btnGood" onclick="add('p2','primary', 5)">+5</button>
+          <div class="btnGrid4">
+            <button class="btnNeutral" data-action="add" data-player="p2" data-field="primary" data-delta="-5">−5</button>
+            <button class="btnNeutral" data-action="add" data-player="p2" data-field="primary" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p2" data-field="primary" data-delta="1">+1</button>
+            <button class="btnGood" data-action="add" data-player="p2" data-field="primary" data-delta="5">+5</button>
           </div>
         </div>
 
@@ -340,23 +437,21 @@
             <div class="name">Secondary</div>
             <div class="num" id="p2Secondary">0</div>
           </div>
-          <div class="btnRow">
-            <button onclick="add('p2','secondary',-5)">−5</button>
-            <button onclick="add('p2','secondary',-1)">−1</button>
-            <button class="btnGood" onclick="add('p2','secondary', 1)">+1</button>
-            <button class="btnGood" onclick="add('p2','secondary', 5)">+5</button>
+          <div class="btnGrid4">
+            <button class="btnNeutral" data-action="add" data-player="p2" data-field="secondary" data-delta="-5">−5</button>
+            <button class="btnNeutral" data-action="add" data-player="p2" data-field="secondary" data-delta="-1">−1</button>
+            <button class="btnGood" data-action="add" data-player="p2" data-field="secondary" data-delta="1">+1</button>
+            <button class="btnGood" data-action="add" data-player="p2" data-field="secondary" data-delta="5">+5</button>
           </div>
         </div>
       </section>
     </div>
 
-    <footer>
-      Tip: This autosaves locally on your device. Works offline once loaded.
-    </footer>
+    <footer>Tip: It autosaves on your device. If you open it in a different browser/device, it starts fresh.</footer>
   </div>
 
   <script>
-    const STORAGE_KEY = "wh40k10_score_tracker_v1";
+    const STORAGE_KEY = "wh40k10_score_tracker_v2";
 
     const defaultState = () => ({
       round: 1,
@@ -366,48 +461,72 @@
 
     let state = defaultState();
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+    function safeNum(x, fallback=0){
+      const n = Number(x);
+      return Number.isFinite(n) ? n : fallback;
+    }
 
     function load(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
         if(!raw) return;
-        const parsed = JSON.parse(raw);
+        const p = JSON.parse(raw);
 
-        // basic validation + fallback
-        if(typeof parsed === "object" && parsed){
-          state = {
-            round: clamp(Number(parsed.round ?? 1), 1, 5),
-            p1: {
-              name: String(parsed.p1?.name ?? "Player 1").slice(0,24),
-              cp: Math.max(0, Number(parsed.p1?.cp ?? 1)),
-              primary: Math.max(0, Number(parsed.p1?.primary ?? 0)),
-              secondary: Math.max(0, Number(parsed.p1?.secondary ?? 0)),
-            },
-            p2: {
-              name: String(parsed.p2?.name ?? "Player 2").slice(0,24),
-              cp: Math.max(0, Number(parsed.p2?.cp ?? 1)),
-              primary: Math.max(0, Number(parsed.p2?.primary ?? 0)),
-              secondary: Math.max(0, Number(parsed.p2?.secondary ?? 0)),
-            }
-          };
-        }
+        state = {
+          round: clamp(safeNum(p.round, 1), 1, 5),
+          p1: {
+            name: String(p?.p1?.name ?? "Player 1").slice(0,24),
+            cp: Math.max(0, safeNum(p?.p1?.cp, 1)),
+            primary: Math.max(0, safeNum(p?.p1?.primary, 0)),
+            secondary: Math.max(0, safeNum(p?.p1?.secondary, 0))
+          },
+          p2: {
+            name: String(p?.p2?.name ?? "Player 2").slice(0,24),
+            cp: Math.max(0, safeNum(p?.p2?.cp, 1)),
+            primary: Math.max(0, safeNum(p?.p2?.primary, 0)),
+            secondary: Math.max(0, safeNum(p?.p2?.secondary, 0))
+          }
+        };
       }catch(e){
-        // ignore broken saves
+        // ignore broken save
       }
     }
 
     function save(){
-      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-      catch(e){ /* ignore */ }
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }catch(e){}
     }
 
     function total(player){
       return (state[player].primary || 0) + (state[player].secondary || 0);
     }
 
+    function flash(el){
+      // restart animation even if tapped fast
+      el.classList.remove("flash");
+      // force reflow
+      void el.offsetWidth;
+      el.classList.add("flash");
+    }
+
+    // Keep last rendered values so we can flash only when changed
+    let lastRendered = null;
+
     function render(){
-      document.getElementById("roundValue").textContent = state.round;
+      const ids = {
+        roundValue: state.round,
+        p1CP: state.p1.cp,
+        p1Primary: state.p1.primary,
+        p1Secondary: state.p1.secondary,
+        p1Total: total("p1"),
+        p2CP: state.p2.cp,
+        p2Primary: state.p2.primary,
+        p2Secondary: state.p2.secondary,
+        p2Total: total("p2"),
+      };
 
       // Names
       const p1Name = document.getElementById("p1Name");
@@ -415,33 +534,42 @@
       if(p1Name.value !== state.p1.name) p1Name.value = state.p1.name;
       if(p2Name.value !== state.p2.name) p2Name.value = state.p2.name;
 
-      // Player 1
-      document.getElementById("p1CP").textContent = state.p1.cp;
-      document.getElementById("p1Primary").textContent = state.p1.primary;
-      document.getElementById("p1Secondary").textContent = state.p1.secondary;
-      document.getElementById("p1Total").textContent = total("p1");
+      // Numbers + flash when changed
+      if(!lastRendered) lastRendered = { ...ids };
 
-      // Player 2
-      document.getElementById("p2CP").textContent = state.p2.cp;
-      document.getElementById("p2Primary").textContent = state.p2.primary;
-      document.getElementById("p2Secondary").textContent = state.p2.secondary;
-      document.getElementById("p2Total").textContent = total("p2");
+      for(const [id, val] of Object.entries(ids)){
+        const el = document.getElementById(id);
+        const newText = String(val);
+        const oldText = el.textContent;
+
+        if(oldText !== newText){
+          el.textContent = newText;
+        }
+
+        // flash only if value changed vs lastRendered
+        if(lastRendered[id] !== val){
+          flash(el);
+        }
+      }
+
+      lastRendered = { ...ids };
     }
 
     function add(player, field, delta){
-      state[player][field] = Math.max(0, Number(state[player][field] || 0) + delta);
+      const cur = safeNum(state[player][field], 0);
+      state[player][field] = Math.max(0, cur + delta);
       save();
       render();
     }
 
     function changeRound(delta){
-      state.round = clamp(Number(state.round) + delta, 1, 5);
+      state.round = clamp(safeNum(state.round, 1) + delta, 1, 5);
       save();
       render();
     }
 
     function resetGame(){
-      const ok = confirm("Reset scores and CP back to Round 1 defaults?\n\nRound: 1\nCP: 1 each\nPrimary/Secondary: 0");
+      const ok = confirm("Reset to defaults?\n\nRound: 1\nCP: 1 each\nPrimary/Secondary: 0");
       if(!ok) return;
       state = defaultState();
       save();
@@ -453,24 +581,76 @@
       if(!ok) return;
       localStorage.removeItem(STORAGE_KEY);
       state = defaultState();
+      lastRendered = null;
       render();
       alert("Cleared. Back to defaults.");
     }
 
-    // Name inputs autosave
-    document.addEventListener("input", (e) => {
-      if(e.target?.id === "p1Name"){
-        state.p1.name = e.target.value.slice(0,24);
-        save(); render();
-      }
-      if(e.target?.id === "p2Name"){
-        state.p2.name = e.target.value.slice(0,24);
-        save(); render();
-      }
-    });
+    function handleAction(btn){
+      const action = btn.dataset.action;
 
-    // init
+      if(action === "round"){
+        changeRound(safeNum(btn.dataset.delta, 0));
+        return;
+      }
+
+      if(action === "add"){
+        const player = btn.dataset.player;
+        const field = btn.dataset.field;
+        const delta = safeNum(btn.dataset.delta, 0);
+        add(player, field, delta);
+        return;
+      }
+
+      if(action === "reset"){
+        resetGame();
+        return;
+      }
+
+      if(action === "clear"){
+        clearSaved();
+        return;
+      }
+    }
+
+    // iPad/iPhone reliability:
+    // Use pointerdown/touchstart instead of inline onclick.
+    function attachButtonHandlers(){
+      const buttons = document.querySelectorAll("button[data-action]");
+
+      buttons.forEach(btn => {
+        // Prevent double-trigger: we handle only one event.
+        // Use pointerdown when available; fall back to touchstart/click.
+        const onPress = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          handleAction(btn);
+        };
+
+        btn.addEventListener("pointerdown", onPress, { passive: false });
+        btn.addEventListener("touchstart", onPress, { passive: false });
+        btn.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          handleAction(btn);
+        }, { passive: false });
+      });
+    }
+
+    function attachNameHandlers(){
+      document.getElementById("p1Name").addEventListener("input", (e) => {
+        state.p1.name = String(e.target.value).slice(0,24);
+        save();
+      });
+      document.getElementById("p2Name").addEventListener("input", (e) => {
+        state.p2.name = String(e.target.value).slice(0,24);
+        save();
+      });
+    }
+
+    // Init
     load();
+    attachButtonHandlers();
+    attachNameHandlers();
     render();
   </script>
 </body>
