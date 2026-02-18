@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Warhammer 40K 10th — Score Tracker</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#121a24;
+      --card2:#0f1620;
+      --text:#e8eef6;
+      --muted:#a9b6c7;
+      --line:#223043;
+      --good:#2dd4bf;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --btn:#1f2b3a;
+      --btn2:#263449;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background: radial-gradient(1000px 600px at 20% -10%, rgba(45,212,191,.12), transparent 60%),
+                  radial-gradient(800px 500px at 90% 0%, rgba(251,191,36,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      padding:16px;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    header{
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .title{
+      flex:1;
+      min-width: 260px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:14px 14px;
+      box-shadow: var(--shadow);
+    }
+    .title h1{
+      font-size: 16px;
+      margin:0 0 4px 0;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:0;
+      color:var(--muted);
+      font-size: 12px;
+    }
+    .topControls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:stretch;
+    }
+    .pill{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:10px;
+      min-width: 230px;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .label{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+    .valueBig{
+      font-size: 26px;
+      font-weight: 800;
+      line-height:1;
+    }
+    .btnRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      color:var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor:pointer;
+      min-width: 54px;
+      touch-action: manipulation;
+    }
+    button:active{ transform: translateY(1px); }
+    .btnSmall{ padding: 8px 10px; min-width: 48px; font-size: 13px; }
+    .btnDanger{ border-color: rgba(251,113,133,.45); }
+    .btnDanger:hover{ box-shadow: 0 0 0 3px rgba(251,113,133,.15); }
+    .btnGood{ border-color: rgba(45,212,191,.45); }
+    .btnGood:hover{ box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 840px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+    .player{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .playerHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .playerName{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .playerName input{
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 10px;
+      color: var(--text);
+      font-weight:800;
+      font-size: 16px;
+      width: 100%;
+      min-width: 180px;
+      outline:none;
+    }
+    .totals{
+      text-align:right;
+    }
+    .totals .label{ margin-bottom:2px; display:block; }
+    .totals .score{
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--good);
+    }
+    .stat{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.14);
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .statTop{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .statTop .name{
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .statTop .num{
+      font-weight: 900;
+      font-size: 26px;
+      line-height:1;
+    }
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: -6px;
+    }
+    footer{
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+      padding: 6px 0 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Warhammer 40K 10th — Simple Score Tracker</h1>
+        <p>Battle Round • CP • Primary • Secondary • Totals • Autosave (this browser)</p>
+      </div>
+
+      <div class="topControls">
+        <div class="pill" aria-label="Battle round controls">
+          <div class="row">
+            <div>
+              <div class="label">Battle Round</div>
+              <div class="valueBig" id="roundValue">1</div>
+            </div>
+            <div class="btnRow">
+              <button class="btnSmall" onclick="changeRound(-1)">−</button>
+              <button class="btnSmall" onclick="changeRound(1)">+</button>
+            </div>
+          </div>
+          <div class="hint">Clamped to rounds 1–5.</div>
+        </div>
+
+        <div class="pill" aria-label="Game actions">
+          <div class="row">
+            <div>
+              <div class="label">Quick Actions</div>
+              <div style="font-weight:800;">Reset / Clear</div>
+            </div>
+            <div class="btnRow">
+              <button class="btnSmall btnDanger" onclick="resetGame()">Reset</button>
+              <button class="btnSmall" onclick="clearSaved()">Clear Save</button>
+            </div>
+          </div>
+          <div class="hint">Reset keeps autosave; Clear Save removes stored data.</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="player" aria-label="Player 1">
+        <div class="playerHead">
+          <div class="playerName">
+            <div class="label">Player 1</div>
+            <input id="p1Name" value="Player 1" maxlength="24" />
+          </div>
+          <div class="totals">
+            <span class="label">Total</span>
+            <div class="score" id="p1Total">0</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Command Points (CP)</div>
+            <div class="num" id="p1CP">1</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p1','cp',-1)">−1</button>
+            <button onclick="add('p1','cp', 1)">+1</button>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Primary</div>
+            <div class="num" id="p1Primary">0</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p1','primary',-5)">−5</button>
+            <button onclick="add('p1','primary',-1)">−1</button>
+            <button class="btnGood" onclick="add('p1','primary', 1)">+1</button>
+            <button class="btnGood" onclick="add('p1','primary', 5)">+5</button>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Secondary</div>
+            <div class="num" id="p1Secondary">0</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p1','secondary',-5)">−5</button>
+            <button onclick="add('p1','secondary',-1)">−1</button>
+            <button class="btnGood" onclick="add('p1','secondary', 1)">+1</button>
+            <button class="btnGood" onclick="add('p1','secondary', 5)">+5</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="player" aria-label="Player 2">
+        <div class="playerHead">
+          <div class="playerName">
+            <div class="label">Player 2</div>
+            <input id="p2Name" value="Player 2" maxlength="24" />
+          </div>
+          <div class="totals">
+            <span class="label">Total</span>
+            <div class="score" id="p2Total">0</div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Command Points (CP)</div>
+            <div class="num" id="p2CP">1</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p2','cp',-1)">−1</button>
+            <button onclick="add('p2','cp', 1)">+1</button>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Primary</div>
+            <div class="num" id="p2Primary">0</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p2','primary',-5)">−5</button>
+            <button onclick="add('p2','primary',-1)">−1</button>
+            <button class="btnGood" onclick="add('p2','primary', 1)">+1</button>
+            <button class="btnGood" onclick="add('p2','primary', 5)">+5</button>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statTop">
+            <div class="name">Secondary</div>
+            <div class="num" id="p2Secondary">0</div>
+          </div>
+          <div class="btnRow">
+            <button onclick="add('p2','secondary',-5)">−5</button>
+            <button onclick="add('p2','secondary',-1)">−1</button>
+            <button class="btnGood" onclick="add('p2','secondary', 1)">+1</button>
+            <button class="btnGood" onclick="add('p2','secondary', 5)">+5</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      Tip: This autosaves locally on your device. Works offline once loaded.
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "wh40k10_score_tracker_v1";
+
+    const defaultState = () => ({
+      round: 1,
+      p1: { name: "Player 1", cp: 1, primary: 0, secondary: 0 },
+      p2: { name: "Player 2", cp: 1, primary: 0, secondary: 0 }
+    });
+
+    let state = defaultState();
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const parsed = JSON.parse(raw);
+
+        // basic validation + fallback
+        if(typeof parsed === "object" && parsed){
+          state = {
+            round: clamp(Number(parsed.round ?? 1), 1, 5),
+            p1: {
+              name: String(parsed.p1?.name ?? "Player 1").slice(0,24),
+              cp: Math.max(0, Number(parsed.p1?.cp ?? 1)),
+              primary: Math.max(0, Number(parsed.p1?.primary ?? 0)),
+              secondary: Math.max(0, Number(parsed.p1?.secondary ?? 0)),
+            },
+            p2: {
+              name: String(parsed.p2?.name ?? "Player 2").slice(0,24),
+              cp: Math.max(0, Number(parsed.p2?.cp ?? 1)),
+              primary: Math.max(0, Number(parsed.p2?.primary ?? 0)),
+              secondary: Math.max(0, Number(parsed.p2?.secondary ?? 0)),
+            }
+          };
+        }
+      }catch(e){
+        // ignore broken saves
+      }
+    }
+
+    function save(){
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch(e){ /* ignore */ }
+    }
+
+    function total(player){
+      return (state[player].primary || 0) + (state[player].secondary || 0);
+    }
+
+    function render(){
+      document.getElementById("roundValue").textContent = state.round;
+
+      // Names
+      const p1Name = document.getElementById("p1Name");
+      const p2Name = document.getElementById("p2Name");
+      if(p1Name.value !== state.p1.name) p1Name.value = state.p1.name;
+      if(p2Name.value !== state.p2.name) p2Name.value = state.p2.name;
+
+      // Player 1
+      document.getElementById("p1CP").textContent = state.p1.cp;
+      document.getElementById("p1Primary").textContent = state.p1.primary;
+      document.getElementById("p1Secondary").textContent = state.p1.secondary;
+      document.getElementById("p1Total").textContent = total("p1");
+
+      // Player 2
+      document.getElementById("p2CP").textContent = state.p2.cp;
+      document.getElementById("p2Primary").textContent = state.p2.primary;
+      document.getElementById("p2Secondary").textContent = state.p2.secondary;
+      document.getElementById("p2Total").textContent = total("p2");
+    }
+
+    function add(player, field, delta){
+      state[player][field] = Math.max(0, Number(state[player][field] || 0) + delta);
+      save();
+      render();
+    }
+
+    function changeRound(delta){
+      state.round = clamp(Number(state.round) + delta, 1, 5);
+      save();
+      render();
+    }
+
+    function resetGame(){
+      const ok = confirm("Reset scores and CP back to Round 1 defaults?\n\nRound: 1\nCP: 1 each\nPrimary/Secondary: 0");
+      if(!ok) return;
+      state = defaultState();
+      save();
+      render();
+    }
+
+    function clearSaved(){
+      const ok = confirm("Clear saved data from this device/browser?");
+      if(!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = defaultState();
+      render();
+      alert("Cleared. Back to defaults.");
+    }
+
+    // Name inputs autosave
+    document.addEventListener("input", (e) => {
+      if(e.target?.id === "p1Name"){
+        state.p1.name = e.target.value.slice(0,24);
+        save(); render();
+      }
+      if(e.target?.id === "p2Name"){
+        state.p2.name = e.target.value.slice(0,24);
+        save(); render();
+      }
+    });
+
+    // init
+    load();
+    render();
+  </script>
+</body>
+</html>
